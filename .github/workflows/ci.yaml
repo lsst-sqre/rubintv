@@ -81,14 +81,18 @@ jobs:
         run: flutter pub get
         working-directory: ./ddv
 
+      - name: Inject script into index.html template
+        # The script changes the base tag in the index page of DDV before
+        # the Flutter app script is run.
+        run: sed -i -e '/<body>/r scripts/configure-base-ref.html' ddv/web/index.html
+
       - name: Print flutter/dart version
         run: flutter --version
 
       - name: Build Flutter web app
-        # TODO: Make --base-href configurable at runtime.
-        # the first part could be 'rubintv' or 'rubintv-dev'
-        # see DM-44660 https://rubinobs.atlassian.net/browse/DM-44660
-        run: flutter build web --base-href /rubintv/ddv/ --profile --source-maps
+        # No need to set --base-html as the above script will insert it
+        # at runtime.
+        run: flutter build web  --profile --source-maps
         working-directory: ./ddv
 
 

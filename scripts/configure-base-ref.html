@@ -1,0 +1,13 @@
+<script>
+const bases = document.getElementsByTagName('base');
+if (bases.length > 0) {
+  const base = bases[0];
+  console.log('Base address was:',base.href)
+  const baseHref = window.location.pathname;
+  if (!baseHref.endsWith('/')) {
+    baseHref += '/';
+  }
+  base.href = baseHref;
+  console.log('Base address now is:',base.href)
+}
+</script>
