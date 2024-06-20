@@ -156,6 +156,24 @@ class RubinDataMocker:
             self.seq_objs[loc_cam] = channel_data
             self.events[loc_cam] = self.dicts_to_events(channel_data)
 
+    # TODO: Write the below functions to add to the mocked state
+
+    def mock_per_day_event(self, location: Location, camera: Camera) -> None:
+        # channel_data: list[dict[str, str]] = []
+        loc_cam = f"{location.name}/{camera.name}"
+
+        for channel in camera.channels:
+            loc_cam_chan = f"{loc_cam}/{channel.name}"
+            start = self.last_seq.get(loc_cam_chan, self.FIRST_SEQ)
+            start
+            # TODO: Finish this function
+
+    def mock_night_report_metadata(self) -> None:
+        pass
+
+    def mock_night_report_plots(self) -> None:
+        pass
+
     def generate_event(
         self, bucket_name: str, camera_name: str, channel_name: str, seq_num: str
     ) -> dict[str, str]:
@@ -233,17 +251,6 @@ class RubinDataMocker:
         if self.s3_required:
             self.upload_fileobj(md_json, location.bucket_name, key)
         return metadata
-
-    # TODO: Write the below functions to add to the mocked state
-
-    def mock_per_day_event(self) -> None:
-        pass
-
-    def mock_night_report_metadata(self) -> None:
-        pass
-
-    def mock_night_report_plots(self) -> None:
-        pass
 
     def upload_file(self, file_name: Path | str, bucket_name: str, key: str) -> bool:
         """Upload a file to an S3 bucket.
