@@ -78,8 +78,8 @@ function NightReportText ({ nightReport, selected }) {
 NightReportText.propTypes = {
   /**
    * NightReportText objects have keys that are either `text_${num}` for which
-   * the value is a multiline text string with newline (\n) delimeters or a
-   * link/title pair.
+   * the value is a multiline text string with newline (\n) delimeters or an
+   * object of link(value)/title(key) pairs.
    */
   nightReport: PropTypes.object
 }
