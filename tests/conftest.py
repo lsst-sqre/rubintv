@@ -35,18 +35,28 @@ def mock_s3_client(aws_credentials: Any) -> Iterator[Any]:
         yield boto3.client("s3", region_name="us-east-1")
 
 
+# Below ASGITransport parameters are an issue for mypy at the moment.
+# https://github.com/encode/httpx/discussions/3104
+# Will remove the 'ignore' when httpx >= 0.27.1
+# See DM-45382 https://rubinobs.atlassian.net/browse/DM-45382
+
+
 @pytest_asyncio.fixture(scope="function")
 async def mocked_client(
-    mock_s3_client: Any,
-) -> AsyncIterator[Tuple[AsyncClient, FastAPI, RubinDataMocker]]:
-    app = create_app()
-    models = ModelsInitiator()
-    mocker = RubinDataMocker(models.locations, s3_required=True)
-    async with LifespanManager(app):
-        async with AsyncClient(
-            transport=ASGITransport(app=app), base_url="http://127.0.0.1:8000/"
-        ) as client:
-            yield client, app, mocker
+    mocked_app: Tuple[FastAPI, RubinDataMocker]
+) -> AsyncIterator[Tuple[AsyncClient, RubinDataMocker]]:
+    app, mocker = mocked_app
+    """Return an ``httpx.AsyncClient`` configured to talk to the test app."""
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://127.0.0.1:8000/"  # type: ignore
+    ) as client:
+        yield client, mocker
+
+
+@pytest.fixture(scope="function")
+def mock_s3_client(aws_credentials: Any) -> Any:
+    with mock_s3_service():
+        yield boto3.client("s3", region_name="us-east-1")
 
 
 @contextmanager
