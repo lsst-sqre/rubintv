@@ -101,9 +101,6 @@ class RubinDataMocker:
         None
         """
 
-        # TODO: keep adding to the add_data() functions
-        # see DM-44838 https://rubinobs.atlassian.net/browse/DM-44838
-
         for location in self._locations:
             loc_name = location.name
             self.events[loc_name] = []
