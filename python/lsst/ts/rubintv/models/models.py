@@ -258,7 +258,7 @@ class NightReportData:
              Tuple of values used by `__post_init__` to fully init the object.
         """
         key = self.key
-        metadata_re = re.compile(r"(\w+)\/([\d-]+)\/night_report\/([\w-]+md)\.(\w+)$")
+        metadata_re = re.compile(r"(\w+)\/([\d-]+)\/night_report\/([\w-]*md)\.(\w+)$")
         if match := metadata_re.match(key):
             parts = match.groups()
             camera, day_obs_str, filename, ext = parts
@@ -290,8 +290,22 @@ class NightReportData:
 
 
 class NightReport(BaseModel):
-    text: dict[str, Any] | None = {}
-    plots: list[NightReportData] | None = []
+    """Comprises a dict of text, keyed either ``f"text_{num}"`` for
+    multiline monospaced text with none-breaking spaces or anything else which
+    are treated as a list of link/value pairs and a list of `NightReportData`
+    objects that encapsulate plot images.
+
+    Parameters
+    ----------
+    text: `dict` [`str`, `str` | `dict` [`str`, `str`]]
+        The text portion of the night report.
+    plots: `list` [`NightReportData`]
+        A list of NightReportData objects that represent the plots in the
+        night report.
+    """
+
+    text: dict[str, int | dict[str, str]] = {}
+    plots: list[NightReportData] = []
 
 
 def get_current_day_obs() -> date:
